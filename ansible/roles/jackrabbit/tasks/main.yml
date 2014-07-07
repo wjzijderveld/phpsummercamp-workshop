@@ -1,0 +1,36 @@
+---
+- name: jackrabbit | download and install
+  file: path={{ base_dir }} state=directory owner=root group=root mode=0755
+  tags: jackrabbit
+
+- get_url: url=http://www.eu.apache.org/dist/jackrabbit/{{ version }}/{{ jar }} dest={{ path }} owner=root group=root mode=0755
+  tags: jackrabbit
+
+- name: jackrabbit | create symlink
+  file: src={{ path }} dest={{ base_dir }}/jackrabbit.jar owner=root group=root state=link
+  tags: jackrabbit
+
+- name: jackrabbit | install startup script
+  get_url: url=https://raw2.github.com/sixty-nine/Jackrabbit-startup-script/master/jackrabbit.sh dest={{ startup_script_path }} owner=root group=root mode=0755
+  tags: jackrabbit
+
+- name: jackrabbit | install startup script dependencies
+  apt: pkg=curl state=latest
+  tags: jackrabbit
+
+- name: jackrabbit | configure startup script
+  lineinfile: dest={{ startup_script_path }} regexp="{{ item.regexp }}" line="{{ item.line }}"
+  with_items:
+    - { regexp: "^BASEDIR=", line: "BASEDIR={{ base_dir }}" }
+    - { regexp: "^JACKRABBIT_JAR=", line: "JACKRABBIT_JAR=$BASEDIR/{{ jar }}" }
+    - { regexp: "^JACKRABBIT_HOST=", line: "JACKRABBIT_HOST={{ host }}" }
+    - { regexp: "^JACKRABBIT_PORT=", line: "JACKRABBIT_PORT={{ port }}" }
+  tags: jackrabbit
+
+- name: jackrabbit | remove startup script jmx config
+  lineinfile: dest={{ startup_script_path }} insertafter="^LOGFILE=" line="MANAGEMENT="
+  tags: jackrabbit
+
+- name: jackrabbit | ensure service is running
+  service: name=jackrabbit state=started enabled=yes
+  tags: jackrabbit
