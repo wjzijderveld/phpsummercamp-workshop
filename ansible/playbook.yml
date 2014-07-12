@@ -3,7 +3,7 @@
   roles:
     - common
     - jackrabbit
-      #    - php
+    - php
       #    - app
 
 

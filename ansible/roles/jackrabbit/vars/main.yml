@@ -3,6 +3,6 @@ version: 2.8.0
 base_dir: /usr/bin/jackrabbit
 jar: "jackrabbit-standalone-{{ version }}.jar"
 path: "{{ base_dir }}/{{ jar }}"
-host: 127.0.0.1
+host: 0.0.0.0
 port: 8080
 startup_script_path: /etc/init.d/jackrabbit
