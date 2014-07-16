@@ -6,3 +6,6 @@
   apt: name={{ item }} state=present
   with_items:
     - php5-curl
+
+- name: Install phpcrsh
+  copy: src=phpcrsh.phar dest=/usr/local/bin/phpcrsh mode=0775 owner=vagrant
