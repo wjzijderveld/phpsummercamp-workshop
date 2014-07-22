@@ -135,6 +135,7 @@
 
         <section>
           <h2>A set of interfaces</h2>
+          <p class="fragment">No implementation</p>
         </section>
 
         <section>
@@ -154,15 +155,6 @@
 
           <p>For example: a webpage with attached images or documents</p>
         </section>
-
-
-
-
-
-
-
-
-
 
 
 
@@ -186,9 +178,60 @@
         </section>
 
         <section>
-          <h2>Setting up</h2>
 
-          <pre><code data-trim class="bash">$ vagrant up</code></pre>
+          <section>
+
+            <h2>Setting up</h2>
+
+            <pre><code data-trim class="bash">$ vagrant up</code></pre>
+
+          </section>
+
+          <section>
+            <ul>
+              <li>PHPCR-Shell uses Jackalope</li>
+              <li>We use Jackrabbit as backend</li>
+            </ul>
+          </section>
+        </section>
+
+        <section>
+
+          <section>
+            <h2>Using PHPCR-shell</h2>
+          </section>
+
+          <section>
+            <pre><code data-trim class="bash">
+# Connect to jackrabbit
+$ phpcrsh -t jackrabbit
+# list the nodes under /
+$ ls
+# Retrieve info of current node
+$ node:info .
+            </code></pre>
+          </section>
+
+        </section>
+
+        <section>
+
+          <section>
+            <h2>Creating your first content</h2>
+          </section>
+
+          <section>
+            <pre><code data-trim class="bash">
+# Create a contact page
+$ node:create /cms
+$ node:create /cms/contact
+# Set the title on the contact page
+$ touch /cms/contact/title "Contact us"
+# Set the content of the page
+$ touch /cms/contact/content "Sent a pigeon our way!"
+# Check our work
+$ ls /cms/contact
+          </section>
         </section>
 
       </div>
