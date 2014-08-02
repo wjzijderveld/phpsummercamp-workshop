@@ -1,0 +1,20 @@
+---
+- name: Install nginx
+  apt: name=nginx state=present
+  tags: nginx
+
+- name: Copy config
+  copy: src=nginx.conf dest=/etc/nginx/nginx.conf
+  tags: nginx
+
+- name: Disable apache
+  service: name=apache2 state=stopped
+  tags: nginx
+
+- name: Enable nginx service
+  service: name=nginx enabled=yes state=running
+  tags: nginx
+
+- name: Copy server config
+  copy: src=site.conf dest=/etc/nginx/sites-enabled/phpcr-cms.conf
+  tags: nginx
