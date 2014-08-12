@@ -40,6 +40,7 @@ function reset_workspace {
         exit 1;
     fi
 
+    echo "Removing $WORKSPACES_DIR/$1"
     rm -rf $WORKSPACES_DIR/$1
 
     create_workspace $1

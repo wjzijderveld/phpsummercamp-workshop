@@ -6,7 +6,7 @@
 - A short history lesson
 - Why PHPCR
 
-## Part 1: Using phpcr-shell to create some content
+## Part 1: Using phpcr-shell to create content
 
 - Short introduction about the box + installing jackrabbit and phpcr-shell
 - Short introduction of phpcr-shell
@@ -17,16 +17,43 @@
     - workspace:create + list
     - session:save
 
-### Task 1
+### Part 1
 
-Create some pages for a simple company website, it should include some images. (@TODO: Put some images + pdf's in the /vagrant/files/)
+- Start jackrabbit
+- Install and launch PHPCR-Shell
+
+- Create some pages for a simple company website
+    - Homepage
+    - About
+    - Press
+        - Media
+            - envil.gif
+            - explosive-tennisballs.jpg
+    - policy.pdf
+- Bootstrap a single file application
+    - Setup the PHPCR session to Jackrabbit
+- Display some of the content in your webbrowser. Can be hardcoded for now.
 
 
+### Part 2
+
+- Create a simple controller that maps the REQUEST_URI to the path of the node
+    - Start extracting to separate classes
+
+- Make sure you have a way to serve the images and pdf
+- Add a simple menu
+
+### Part 3
+
+- Create a custom nodeType
+- Use that nodeType to render blocks on a page
 
 
+### Part 4 - when time allows us
 
-
-
+- Add basic multilanguage support to your content
+    - Can be based on properties or childnodes
+    - Can be dependent on URL prefix
 
 
 
