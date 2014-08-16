@@ -1,4 +1,4 @@
-# PHPSummercamp workshop - Build a schematic CMS in 3 hours with only PHPCR 
+# PHPSummercamp workshop - Build a schematic CMS in 3 hours with only PHPCR
 
 ## Introduction
 
@@ -6,54 +6,97 @@
 - A short history lesson
 - Why PHPCR
 
-## Part 1: Using phpcr-shell to create content
+## Part 1: Creating a simple PHPCR based website
+
+### Introduction
 
 - Short introduction about the box + installing jackrabbit and phpcr-shell
+- Start jackrabbit
+- Launch PHPCR-Shell
 - Short introduction of phpcr-shell
     - node:list
     - node:create
     - node:property:set
     - file:import
     - workspace:create + list
-    - session:save
+    - session:save !!
+- Setting up the session, basics like getRootNode, hasNode, hasProperty, isNodeType
 
-### Part 1
-
-- Start jackrabbit
-- Install and launch PHPCR-Shell
+### Goals
 
 - Create some pages for a simple company website
-    - Homepage
-    - About
-    - Press
-        - Media
-            - envil.gif
-            - explosive-tennisballs.jpg
-    - policy.pdf
-- Bootstrap a single file application
-    - Setup the PHPCR session to Jackrabbit
-- Display some of the content in your webbrowser. Can be hardcoded for now.
+- /cms
+    + /homepage
+        - title: ?
+        - content; ?
+    + /about
+        - title: ?
+        - content: ?
+    + /press
+        - title: ?
+        - content: ?
+        + /media
+            + /envil.gif
+            + /explosive-tennisballs.jpg
+    + /policy.pdf
+- Composer install in /cms
+- Bootstrap a index.php application in /cms/web directory
+- Setup the PHPCR session to Jackrabbit
+- Display some of the content in your webbrowser based on the `REQUEST_URI`, skip nt:file for now.
+
+## Part 2
+
+### Introduction
+
+- Introduction to NodeTypes, nt:unstructured, nt:file etc
+- Adding a custom namespace + nodeType (nt:simple_page)
+- Some tips on serving images
+    - separate 'route' (/resource.php)
+    - Just render them as base64 encoded data, because YOLO
+
+### Goal
+
+Show an image 'gallery' on the media page with the 2 imported images.
 
 
-### Part 2
+ - Add a simple menu
+     - Choose a approach: properties to include/exclude, or a separate tree for menuitems
 
-- Create a simple controller that maps the REQUEST_URI to the path of the node
-    - Start extracting to separate classes
+## Part 3
 
-- Make sure you have a way to serve the images and pdf
-- Add a simple menu
+### Introduction
 
-### Part 3
+ - jcr:uuid
+ - Using referencing to create custom routes
 
-- Create a custom nodeType
-- Use that nodeType to render blocks on a page
+### Goal
+
+Create a menu on your site. You can choose your own solution.
 
 
-### Part 4 - when time allows us
+## Part 4
 
-- Add basic multilanguage support to your content
-    - Can be based on properties or childnodes
-    - Can be dependent on URL prefix
+### Introduction
+
+### Goal
+
+Add versioning to your app, add a dropdown to your site where you can select the history.
+
+
+
+
+
+
+## Part 5 - Bonus
+
+
+### Goal
+
+Add multilanguage support
+
+ - Add basic multilanguage support to your content
+     - Can be based on properties or childnodes
+     - Can be dependent on URL prefix
 
 
 
@@ -81,4 +124,7 @@
 # Commands to remember
 
 Export workspace to file:
-`session:export:view /cms /vagrant/util/export-partx.xml`
+`session:export:view /cms /vagrant/util/export-partX.xml`
+
+
+
