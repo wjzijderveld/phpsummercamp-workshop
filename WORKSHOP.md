@@ -8,6 +8,8 @@
 
 ## Part 1: Creating a simple PHPCR based website
 
+Estimated time introduction + goals: 45min
+
 ### Introduction
 
 - Short introduction about the box + installing jackrabbit and phpcr-shell
@@ -24,71 +26,68 @@
 
 ### Goals
 
-- Create some pages for a simple company website
-- /cms
-    + /homepage
-        - title: ?
-        - content; ?
-    + /about
-        - title: ?
-        - content: ?
-    + /press
-        - title: ?
-        - content: ?
-        + /media
-            + /envil.gif
-            + /explosive-tennisballs.jpg
-    + /policy.pdf
+- Create some pages for a simple company website (keep it simple, we'll replace them later)
+    + /cms
+        + /homepage
+            - title: ?
+            - content; ?
+        + /about
+            - title: ?
+            - content: ?
 - Composer install in /cms
 - Bootstrap a index.php application in /cms/web directory
 - Setup the PHPCR session to Jackrabbit
-- Display some of the content in your webbrowser based on the `REQUEST_URI`, skip nt:file for now.
+- Display the content pages in your webbrowser based on the `REQUEST_URI`, skip nt:file nodes for now.
 
-## Part 2
+## Part 2 - Structure your content
 
 ### Introduction
 
 - Introduction to NodeTypes, nt:unstructured, nt:file etc
-- Adding a custom namespace + nodeType (nt:simple_page)
-- Some tips on serving images
+- Adding a custom nodeType (nt:simple_page)
+- Some options for serving images
     - separate 'route' (/resource.php)
     - Just render them as base64 encoded data, because YOLO
 
 ### Goal
 
+Create the `nt:simple_page` NodeType and replace `/cms/homepage` and `/cms/about` with the new nodes with type `nt:simple_page`.
+
+Add a media node with the 2 images below it, and add the policy.pdf under /cms
+
++ /cms
+    + /media
+        + /envil.gif
+        + /explosive-tennisballs.jpg
+    + /policy.pdf
+
+Adjust your 'Router' to use a different 'Controller' based on the NodeType.
+
 Show an image 'gallery' on the media page with the 2 imported images.
-
-
- - Add a simple menu
-     - Choose a approach: properties to include/exclude, or a separate tree for menuitems
 
 ## Part 3
 
 ### Introduction
 
  - jcr:uuid
- - Using referencing to create custom routes
+ - Using referencing to create links
 
 ### Goal
 
-Create a menu on your site. You can choose your own solution.
-
+Create a menu on your site and add a new URL to an existing node (f.e. /documents/policy to policy.pdf) 
 
 ## Part 4
 
 ### Introduction
+
+VersioningManager
 
 ### Goal
 
 Add versioning to your app, add a dropdown to your site where you can select the history.
 
 
-
-
-
-
 ## Part 5 - Bonus
-
 
 ### Goal
 
@@ -96,18 +95,7 @@ Add multilanguage support
 
  - Add basic multilanguage support to your content
      - Can be based on properties or childnodes
-     - Can be dependent on URL prefix
-
-
-
-
-
-
-
-
-
-
-
+     - Can be dependent on URL prefix or a simple query parameter
 
 
 
@@ -125,6 +113,7 @@ Add multilanguage support
 
 Export workspace to file:
 `session:export:view /cms /vagrant/util/export-partX.xml`
+
 
 
 
