@@ -13,6 +13,22 @@ function sendResponse($content, $status = '200 OK')
     exit;
 }
 
+function render($template, array $variables = array())
+{
+    $templatePath = __DIR__ . '/../templates';
+
+    if (!file_exists($templatePath . '/' . $template)) {
+        throw new \RuntimeException(sprintf('Template "%s" not found', $template));
+    }
+
+    // It does make this pretty easy...
+    extract($variables);
+
+    ob_start();
+    require $templatePath . '/' . $template;
+    return ob_get_clean();
+}
+
 $path = ltrim($_SERVER['REQUEST_URI'], '/');
 
 if ('' === $path) {
@@ -22,10 +38,12 @@ if ('' === $path) {
 if ($cmsNode->hasNode($path)) {
     $currentNode = $cmsNode->getNode($path);
 
-    if (! $currentNode->isNodeType('nt:file')) {
-        $response = '<h1>' . $currentNode->getPropertyValue('title') . '</h1>';
-        $response .= '<p>' . $currentNode->getPropertyValue('content') . '</h1>';
-        sendResponse($response);
+    if ($currentNode->isNodeType('mix:simple_page')) {
+        sendResponse(render('contentPage.html.php', $currentNode->getPropertiesValues()));
+    } if ($currentNode->isNodeType('nt:file')) {
+        $resource = $currentNode->getNode('jcr:content');
+        header('Content-Type: ' . $resource->getPropertyValue('jcr:mimeType'));
+        sendResponse($resource->getProperty('jcr:data')->getString());
     } else {
         sendResponse('The requested document can not me served', '501 Not Implemented');
     }

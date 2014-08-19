@@ -1,0 +1,7 @@
+<mix = 'http://www.jcp.org/jcr/mix/1.0'>
+[mix:simple_page] > nt:unstructured
+orderable query mixin
+- title (string) 
+mandatory
+- content (string) 
+mandatory
