@@ -1,0 +1,8 @@
+<mix = 'http://www.jcp.org/jcr/mix/1.0'>
+[mix:menuItem] > nt:unstructured
+orderable query mixin
+- label (string) 
+mandatory
+- path (string) 
+mandatory
++ nt:unstructured (mix:menuItem)
