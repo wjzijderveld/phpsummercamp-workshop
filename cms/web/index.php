@@ -13,7 +13,7 @@ function sendResponse($content, $status = '200 OK')
     exit;
 }
 
-function render($template, array $variables = array())
+function render($template, Jackalope\Node $node)
 {
     $templatePath = __DIR__ . '/../templates';
 
@@ -21,8 +21,10 @@ function render($template, array $variables = array())
         throw new \RuntimeException(sprintf('Template "%s" not found', $template));
     }
 
+    $properties = $node->getPropertiesValues();
+
     // It does make this pretty easy...
-    extract($variables);
+    extract($properties);
 
     ob_start();
     require $templatePath . '/' . $template;
@@ -39,7 +41,7 @@ if ($cmsNode->hasNode($path)) {
     $currentNode = $cmsNode->getNode($path);
 
     if ($currentNode->isNodeType('mix:simple_page')) {
-        sendResponse(render('contentPage.html.php', $currentNode->getPropertiesValues()));
+        sendResponse(render('contentPage.html.php', $currentNode));
     } if ($currentNode->isNodeType('nt:file')) {
         $resource = $currentNode->getNode('jcr:content');
         header('Content-Type: ' . $resource->getPropertyValue('jcr:mimeType'));
