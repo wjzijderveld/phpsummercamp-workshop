@@ -7,6 +7,8 @@ $cmsNode    = $rootNode->getNode('cms');
 $routesNode = $rootNode->getNode('routes');
 $menuNode   = $rootNode->getNode('menu/main');
 
+$versionManager = $session->getWorkspace()->getVersionManager();
+
 function sendResponse($content, $status = '200 OK')
 {
     header('HTTP/1.1 ' . $status);
@@ -37,16 +39,47 @@ function renderMenu(Jackalope\Node $menuNode)
 
 function renderContentNode(Jackalope\Node $node)
 {
+    global $versionManager;
+
+    $baseNode = $node;
+    if (isset($_GET['version']) && $baseNode->isNodeType('mix:versionable')) {
+        $node = $versionManager->getVersionHistory($baseNode->getPath())->getVersion($_GET['version'])->getFrozenNode();
+    }
+
     $variables = $node->getPropertiesValues();
     $variables['node'] = $node;
+    $variables['versions'] = getVersions($baseNode);
+    $variables['baseVersion'] = getBaseVersion($baseNode);
+    $variables['shownVersion'] = null;
+    if (isset($_GET['version'])) {
+        $variables['shownVersion'] = $_GET['version'];
+    } elseif ($variables['baseVersion']) {
+        $variables['shownVersion'] = $variables['baseVersion']->getName();
+    }
 
     return render('contentPage.html.php', $variables);
 }
 
-$path = ltrim($_SERVER['REQUEST_URI'], '/');
+function getVersions(Jackalope\Node $node)
+{
+    global $versionManager;
 
-if ('' === $path) {
-    $path = 'homepage';
+    if (! $node->isNodeType('mix:versionable')) {
+        return array();
+    }
+
+    return $versionManager->getVersionHistory($node->getPath())->getAllVersions();
+}
+
+function getBaseVersion(Jackalope\Node $node)
+{
+    global $versionManager;
+
+    if (! $node->isNodeType('mix:versionable')) {
+        return;
+    }
+
+    return $versionManager->getBaseVersion($node->getPath());
 }
 
 function handleNode(Jackalope\Node $node, $menuNode)
@@ -60,6 +93,12 @@ function handleNode(Jackalope\Node $node, $menuNode)
     } else {
         sendResponse('The requested document can not me served', '501 Not Implemented');
     }
+}
+
+$path = ltrim(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), '/');
+
+if ('' === $path) {
+    $path = 'homepage';
 }
 
 if ($cmsNode->hasNode($path)) {
