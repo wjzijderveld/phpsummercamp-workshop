@@ -2,18 +2,19 @@
 
 require __DIR__ . '/../bootstrap.php';
 
-$rootNode = $session->getRootNode();
+$rootNode   = $session->getRootNode();
+$cmsNode    = $rootNode->getNode('cms');
+$routesNode = $rootNode->getNode('routes');
+$menuNode   = $rootNode->getNode('menu/main');
 
-$cmsNode = $rootNode->getNode('cms');
-
-function sendResponse($content, $status = '200 OK') 
+function sendResponse($content, $status = '200 OK')
 {
     header('HTTP/1.1 ' . $status);
     echo $content;
     exit;
 }
 
-function render($template, Jackalope\Node $node)
+function render($template, array $variables)
 {
     $templatePath = __DIR__ . '/../templates';
 
@@ -21,14 +22,25 @@ function render($template, Jackalope\Node $node)
         throw new \RuntimeException(sprintf('Template "%s" not found', $template));
     }
 
-    $properties = $node->getPropertiesValues();
-
     // It does make this pretty easy...
-    extract($properties);
+    extract($variables);
 
     ob_start();
     require $templatePath . '/' . $template;
     return ob_get_clean();
+}
+
+function renderMenu(Jackalope\Node $menuNode)
+{
+    return render('menu.html.php', array('nodes' => $menuNode));
+}
+
+function renderContentNode(Jackalope\Node $node)
+{
+    $variables = $node->getPropertiesValues();
+    $variables['node'] = $node;
+
+    return render('contentPage.html.php', $variables);
 }
 
 $path = ltrim($_SERVER['REQUEST_URI'], '/');
@@ -37,19 +49,29 @@ if ('' === $path) {
     $path = 'homepage';
 }
 
-if ($cmsNode->hasNode($path)) {
-    $currentNode = $cmsNode->getNode($path);
-
-    if ($currentNode->isNodeType('mix:simple_page')) {
-        sendResponse(render('contentPage.html.php', $currentNode));
-    } if ($currentNode->isNodeType('nt:file')) {
-        $resource = $currentNode->getNode('jcr:content');
+function handleNode(Jackalope\Node $node, $menuNode)
+{
+    if ($node->isNodeType('mix:simple_page')) {
+        sendResponse(renderMenu($menuNode) . renderContentNode($node));
+    } elseif ($node->isNodeType('nt:file')) {
+        $resource = $node->getNode('jcr:content');
         header('Content-Type: ' . $resource->getPropertyValue('jcr:mimeType'));
         sendResponse($resource->getProperty('jcr:data')->getString());
     } else {
         sendResponse('The requested document can not me served', '501 Not Implemented');
     }
+}
+
+if ($cmsNode->hasNode($path)) {
+    $currentNode = $cmsNode->getNode($path);
+
+    handleNode($currentNode, $menuNode);
 
 } else {
-    sendResponse('<h1>Not found</h1>', '404 Not Found');
+    if ($routesNode->hasNode($path)) {
+        $route = $routesNode->getNode($path);
+        handleNode($route->getPropertyValue('node'), $menuNode);
+    } else {
+        sendResponse('<h1>Not found</h1>', '404 Not Found');
+    }
 }

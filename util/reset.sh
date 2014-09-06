@@ -39,6 +39,12 @@ function create_workspace {
 
 }
 
+function load_cnd()
+{
+    CND=$1
+    phpcrsh -t jackrabbit --command "node-type:load --update $DIR/${CND}.cnd" --command "session:save"
+}
+
 function reset_workspace {
     if [ -z $1 ]; then
         echo "Missing argument"
@@ -59,7 +65,11 @@ function reset_workspace {
     # Import custom stuff per part
     case $1 in
         part3)
-            phpcrsh -t jackrabbit --phpcr-workspace=$PART --command "node-type:load --update $DIR/simple_page.cnd" --command "session:save"
+            load_cnd simple_page
+            ;;
+        part4)
+            load_cnd simple_page
+            load_cnd menuItem
             ;;
     esac
 
@@ -68,6 +78,14 @@ function reset_workspace {
         echo "Importing fixture data"
         phpcrsh -t jackrabbit --phpcr-workspace=$PART --command "session:import-xml / '$DIR/export-$PART.xml'" --command "session:save"
     fi
+
+    fixtures=(cms routes menu)
+    for fixture in ${fixtures[@]}; do
+        echo "Importing: $DIR/export-$PART-$fixture.xml"
+        if [ -f "$DIR/export-$PART-$fixture.xml" ]; then
+            phpcrsh -t jackrabbit --phpcr-workspace=$PART --command "session:import-xml / '$DIR/export-$PART-$fixture.xml'" --command "session:save"
+        fi
+    done
 }
 
 if [ -z $PART ]; then
