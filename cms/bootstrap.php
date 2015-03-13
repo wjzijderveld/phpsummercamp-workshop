@@ -2,7 +2,7 @@
 
 require __DIR__ . '/vendor/autoload.php';
 
-define('CURRENT_PART', 'part4');
+define('CURRENT_PART', 'part5');
 
 ini_set('display_errors', 1);
 error_reporting(E_ALL);

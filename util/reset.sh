@@ -71,11 +71,15 @@ function reset_workspace {
             load_cnd simple_page
             load_cnd menuItem
             ;;
+        part5)
+            load_cnd simple_page
+            load_cnd menuItem
+            ;;
     esac
 
     # Import the fixture data when available
+    echo "Importing fixture data"
     if [ -f "$DIR/export-$PART.xml" ]; then
-        echo "Importing fixture data"
         phpcrsh -t jackrabbit --phpcr-workspace=$PART --command "session:import-xml / '$DIR/export-$PART.xml'" --command "session:save"
     fi
 
