@@ -1,0 +1,27 @@
+---
+- name: Install PHP
+  apt: name=php5 state=latest force=yes
+  tags: php
+
+- name: Install PHP modules
+  apt: name={{ item }} state=present force=yes
+  with_items:
+    - php5-curl
+  tags: php
+
+- name: Install PHP-FPM
+  apt: name=php5-fpm state=present force=yes
+  tags: php
+
+- name: Copy config
+  copy: src=www.conf dest=/etc/php5/fpm/pool.d/www.conf
+  tags: nginx
+
+
+- name: Enable PHP-FPM
+  service: name=php5-fpm enabled=yes state=running
+  tags: php
+
+- name: Install phpcrsh
+  copy: src=phpcrsh.phar dest=/usr/local/bin/phpcrsh mode=0775 owner=vagrant
+  tags: php, phpcrsh

@@ -1,0 +1,10 @@
+---
+- hosts: all
+  roles:
+    - common
+    - jackrabbit
+    - nginx
+    - php
+      #    - app
+
+
